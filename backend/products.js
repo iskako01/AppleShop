@@ -26,6 +26,15 @@ const products = [
     image:
       "https://res.cloudinary.com/demegeci8/image/upload/v1657114550/AppleShop/iphone11_m74ajx.webp",
   },
+  {
+    id: 4,
+    name: "iPhone 13",
+    brand: "Apple",
+    desc: "6.5-inch display",
+    price: 1299,
+    image:
+      "https://res.cloudinary.com/demegeci8/image/upload/v1657222978/AppleShop/iphone13proMax_j4lb7x.webp",
+  },
 ];
 
 module.exports = products;

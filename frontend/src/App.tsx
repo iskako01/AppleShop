@@ -6,21 +6,8 @@ import Cart from "./components/Cart";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
-import { productsFetch } from "./features/productSlice";
-import { AppDispatch, AppStore } from "./redux/store";
-import { Iproduct } from "./type/productType";
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
-  const items = useSelector<AppStore, Iproduct[]>(
-    (state) => state.products.items
-  );
-  console.log(items);
-
-  useEffect(() => {
-    dispatch(productsFetch());
-  }, [dispatch]);
-
   return (
     <div className="App">
       <Navbar />
