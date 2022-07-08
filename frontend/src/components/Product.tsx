@@ -1,11 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Iproduct } from "../type/productType";
+import { addToCart } from "../features/cartSlice";
 
 interface PropsType {
   product: Iproduct;
 }
 
 const Product: React.FC<PropsType> = ({ product }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (product: Iproduct) => {
+    dispatch(addToCart(product));
+  };
+
   return (
     <div className="product">
       <h3>{product.name}</h3>
@@ -16,7 +24,7 @@ const Product: React.FC<PropsType> = ({ product }) => {
         <span>{product.desc}</span>
         <span>${product.price}</span>
       </div>
-      <button>Add to cart</button>
+      <button onClick={() => handleAddToCart(product)}>Add to cart</button>
     </div>
   );
 };

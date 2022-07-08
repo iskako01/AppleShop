@@ -5,4 +5,5 @@ export interface Iproduct {
   desc: string;
   price: number;
   image: string;
+  cartQuantity?: number;
 }
