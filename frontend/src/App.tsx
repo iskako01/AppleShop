@@ -1,23 +1,31 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, Navigate } from "react-router-dom";
+import React from "react";
+import {
+  Route,
+  Routes,
+  Navigate,
+  BrowserRouter as Router,
+} from "react-router-dom";
 import "./App.scss";
 import Cart from "./components/Cart";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <div className="App">
+      <ToastContainer position="bottom-left" />
       <Navbar />
-
-      <Routes>
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/not-found" element={<NotFound />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/*" element={<Navigate to="/not-found" />} />
-      </Routes>
+      {/* <Router> */}
+        <Routes>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/not-found" element={<NotFound />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/*" element={<Navigate to="/not-found" />} />
+        </Routes>
+      {/* </Router> */}
     </div>
   );
 }

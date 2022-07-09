@@ -1,4 +1,4 @@
-export interface Iproduct {
+export interface Icart {
   id: number;
   name: string;
   brand: string;
