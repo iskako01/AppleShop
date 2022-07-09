@@ -2,6 +2,10 @@ import React from "react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Iproduct } from "../type/productType";
 import { toast } from "react-toastify";
+import {
+  getDataFromLocalStorage,
+  addDataToLocalStorage,
+} from "../util/localStorage";
 
 interface IinitialState {
   cartItems: Iproduct[];
@@ -9,11 +13,15 @@ interface IinitialState {
   cartTotalAmount: number;
 }
 
+const localCartItems = getDataFromLocalStorage("cartItems");
+
 const initialState = {
-  cartItems: [],
+  cartItems: localCartItems,
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
 };
+
+console.log(localCartItems);
 
 const cartSlice = createSlice({
   name: "cart",
@@ -32,6 +40,8 @@ const cartSlice = createSlice({
         state.cartItems.push(tempProduct);
         toast.success("Added product to cart.");
       }
+
+      addDataToLocalStorage("cartItems", JSON.stringify(state.cartItems));
     },
   },
 });
