@@ -1,15 +1,28 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { AppStore } from "../redux/store";
 import { Iproduct } from "../type/productType";
 import { arrowleft } from "../assets/icons/icons";
 import { CartItem } from "./CartItem";
+import { clearCart, getTotalPrice } from "../features/cartSlice";
 
 const Cart = () => {
+  const dispatch = useDispatch();
   const cartItems = useSelector<AppStore, Iproduct[]>(
     (state) => state.cart.cartItems
   );
+  const totalPrice = useSelector<AppStore, number>(
+    (state) => state.cart.cartTotalAmount
+  );
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+
+  useEffect(() => {
+    dispatch(getTotalPrice());
+  }, [cartItems]);
 
   return (
     <div className="cart_container">
@@ -41,12 +54,14 @@ const Cart = () => {
           </div>
 
           <div className="cart_summary">
-            <button className="cart_clear">Clear Cart</button>
+            <button className="cart_clear" onClick={handleClearCart}>
+              Clear Cart
+            </button>
 
             <div className="cart_checkout">
               <div className="subtotal">
                 <span>Subtotal</span>
-                <span className="cart_amount">$20000</span>
+                <span className="cart_amount">$ {totalPrice}</span>
               </div>
 
               <p>Taxes and shipping calculated at checkout.</p>

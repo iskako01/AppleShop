@@ -6,8 +6,8 @@ import { AppStore } from "../redux/store";
 import { Iproduct } from "../type/productType";
 
 const Navbar = () => {
-  const cartItem = useSelector<AppStore, Iproduct[]>(
-    (state) => state.cart.cartItems
+  const totalQuantity = useSelector<AppStore, number>(
+    (state) => state.cart.cartTotalQuantity
   );
 
   return (
@@ -20,7 +20,7 @@ const Navbar = () => {
         <div className="nav_bag">
           {bag}
           <span className="bag_quantity">
-            <span>{cartItem.length}</span>
+            <span>{totalQuantity}</span>
           </span>
         </div>
       </Link>

@@ -1,4 +1,10 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import {
+  removeItemCart,
+  addToCart,
+  decreaseQuantityItemTocart,
+} from "../features/cartSlice";
 import { Iproduct } from "../type/productType";
 
 interface PropsType {
@@ -6,6 +12,18 @@ interface PropsType {
 }
 
 export const CartItem: React.FC<PropsType> = ({ cartItem }) => {
+  const dispatch = useDispatch();
+
+  const handleRemoveItemCart = (cartItem: Iproduct) => {
+    dispatch(removeItemCart(cartItem));
+  };
+  const handleIncreaseQuantityItem = (cartItem: Iproduct) => {
+    dispatch(addToCart(cartItem));
+  };
+  const handleDecreaseQuantityItemTocart = (cartItem: Iproduct) => {
+    dispatch(decreaseQuantityItemTocart(cartItem));
+  };
+
   return (
     <div className="cart_Item">
       <div className="cart_Item__product">
@@ -13,20 +31,22 @@ export const CartItem: React.FC<PropsType> = ({ cartItem }) => {
         <div>
           <h3>{cartItem.name}</h3>
           <p>{cartItem.desc}</p>
-          <button>Remove</button>
+          <button onClick={() => handleRemoveItemCart(cartItem)}>Remove</button>
         </div>
       </div>
 
       <div className="cart_Item__price">$ {cartItem.price}</div>
 
       <div className="cart_Item__quantity">
-        <button>-</button>
+        <button onClick={() => handleDecreaseQuantityItemTocart(cartItem)}>
+          -
+        </button>
         <div className="count">{cartItem.cartQuantity}</div>
-        <button>+</button>
+        <button onClick={() => handleIncreaseQuantityItem(cartItem)}>+</button>
       </div>
 
       <div className="cart_Item__total_price">
-       $ {cartItem.price * cartItem.cartQuantity}
+        $ {cartItem.price * cartItem.cartQuantity}
       </div>
     </div>
   );
