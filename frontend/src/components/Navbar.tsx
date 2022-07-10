@@ -1,8 +1,15 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { bag } from "../assets/icons/icons";
+import { AppStore } from "../redux/store";
+import { Iproduct } from "../type/productType";
 
 const Navbar = () => {
+  const cartItem = useSelector<AppStore, Iproduct[]>(
+    (state) => state.cart.cartItems
+  );
+
   return (
     <nav className="nav_bar">
       <Link to="/">
@@ -13,7 +20,7 @@ const Navbar = () => {
         <div className="nav_bag">
           {bag}
           <span className="bag_quantity">
-            <span>0</span>
+            <span>{cartItem.length}</span>
           </span>
         </div>
       </Link>
