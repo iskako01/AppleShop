@@ -2,13 +2,12 @@ const bcrypt = require("bcrypt");
 const joi = require("joi");
 const express = require("express");
 const { User } = require("../models/user");
-const generateAuthToken = require("../utils/generateAuthToken");
+const  generateAuthToken  = require("../utils/generateAuthToken");
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   const schema = joi.object({
-    name: joi.string().min(3).max(30).required(),
     email: joi.string().required().email(),
     password: joi.string().min(6).max(1024).required(),
   });
@@ -19,19 +18,11 @@ router.post("/", async (req, res) => {
 
   let user = await User.findOne({ email: req.body.email });
 
-  if (user) return res.status(400).send("User already exist...");
+  if (!user) return res.status(400).send("Invalid email or password...");
 
-  user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
+  const isValid = await bcrypt.compare(req.body.password, user.password);
 
-  const salt = await bcrypt.genSalt(10);
-
-  user.password = await bcrypt.hash(user.password, salt);
-
-  user = await user.save();
+  if (!isValid) return res.status(400).send("Invalid email or password...");
 
   const token = generateAuthToken(user);
 
