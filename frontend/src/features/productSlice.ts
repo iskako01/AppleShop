@@ -32,7 +32,7 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(productsFetch.pending, (state) => {
-      state.status = "pending";
+      return { ...state, productsFetch: "pending" };
     });
     builder.addCase(
       productsFetch.fulfilled,
@@ -52,5 +52,3 @@ const productSlice = createSlice({
 });
 
 export default productSlice.reducer;
-
-

@@ -12,6 +12,8 @@ import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { Login } from "./components/Login";
+import { Register } from "./components/Register";
 
 function App() {
   return (
@@ -19,12 +21,14 @@ function App() {
       <ToastContainer position="bottom-left" />
       <Navbar />
       {/* <Router> */}
-        <Routes>
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/not-found" element={<NotFound />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/*" element={<Navigate to="/not-found" />} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/not-found" element={<NotFound />} />
+        <Route path="/*" element={<Navigate to="/not-found" />} />
+      </Routes>
       {/* </Router> */}
     </div>
   );

@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { bag } from "../assets/icons/icons";
 import { AppStore } from "../redux/store";
-import { Iproduct } from "../type/productType";
-
 const Navbar = () => {
   const totalQuantity = useSelector<AppStore, number>(
     (state) => state.cart.cartTotalQuantity

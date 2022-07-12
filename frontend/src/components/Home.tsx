@@ -10,6 +10,9 @@ const Home = () => {
   const products = useSelector<AppStore, Iproduct[]>(
     (state) => state.products.items
   );
+  const auth = useSelector<AppStore>((state) => state.auth);
+
+  console.log(auth);
 
   useEffect(() => {
     dispatch(productsFetch());

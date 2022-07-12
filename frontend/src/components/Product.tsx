@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Iproduct } from "../type/productType";
 import { addToCart } from "../features/cartSlice";
 
@@ -9,9 +10,11 @@ interface PropsType {
 
 const Product: React.FC<PropsType> = ({ product }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleAddToCart = (product: Iproduct) => {
     dispatch(addToCart(product));
+    navigate("/cart");
   };
 
   return (
