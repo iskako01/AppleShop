@@ -12,8 +12,8 @@ import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { Login } from "./components/Login";
-import { Register } from "./components/Register";
+import { Login } from "./components/auth/Login";
+import { Register } from "./components/auth/Register";
 
 function App() {
   return (
