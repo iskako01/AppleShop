@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "react-toastify": "9.0.5",
-    "ts-localstorage": "2.0.0"
-  }
-}
