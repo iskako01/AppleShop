@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../features/authSlice";
-import { AppDispatch } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../features/authSlice";
+import { AppDispatch, AppStore } from "../../redux/store";
+import { IregisterState } from "../../type/registerType";
+import { StyledForm } from "./StyledAuth";
 
 export const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const auth = useSelector<AppStore, IregisterState>((state) => state.auth);
 
   const handleSetEmail = (e: any) => {
     setEmail(e.target.value);
@@ -19,15 +24,24 @@ export const Login = () => {
   const handleSubmit = (e: any) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     e.preventDefault();
-    // dispatch(registerUser({
-    // 	email, password,
-    // 	_id: ""
-    // }));
+    dispatch(
+      loginUser({
+        email,
+        password,
+        
+      })
+    );
   };
+
+  useEffect(() => {
+    if (auth._id) {
+      navigate("/cart");
+    }
+  }, [auth._id, navigate]);
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <h2>Login</h2>
         <input
           type="email"
@@ -39,8 +53,12 @@ export const Login = () => {
           onChange={(e) => handleSetPassword(e)}
           placeholder="Password"
         />
-        <button type="submit">Login</button>
-      </form>
+        <button type="submit">
+          {auth.loginStatus === "pending" ? "Submitting" : "Login"}
+        </button>
+
+        {auth.loginStatus === "rejected" ? <p>{auth.loginError}</p> : null}
+      </StyledForm>
     </div>
   );
 };

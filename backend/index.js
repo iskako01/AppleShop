@@ -24,15 +24,17 @@ app.get("/products", (req, res) => {
   res.send(products);
 });
 
+const uri = process.env.DB_URL;
 const port = process.env.PORT || 5000;
-const url = process.env.DB_URL;
 
-app.listen(port, console.log(`Server running on port ${port}`));
+app.listen(port, () => {
+  console.log(`Server running on port: ${port}...`);
+});
 
 mongoose
-  .connect(url, {
+  .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connection succsesful..."))
-  .catch((err) => console.log("MongoDB connection failed", err.message));
+  .then(() => console.log("MongoDB connection established..."))
+  .catch((error) => console.error("MongoDB connection failed:", error.message));

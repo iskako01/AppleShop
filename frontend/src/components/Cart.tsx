@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppStore } from "../redux/store";
 import { Iproduct } from "../type/productType";
 import { arrowleft } from "../assets/icons/icons";
 import { CartItem } from "./CartItem";
 import { clearCart, getTotalPrice } from "../features/cartSlice";
+import { IregisterState } from "../type/registerType";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector<AppStore, Iproduct[]>(
     (state) => state.cart.cartItems
   );
   const totalPrice = useSelector<AppStore, number>(
     (state) => state.cart.cartTotalAmount
   );
+  const auth = useSelector<AppStore, IregisterState>((state) => state.auth);
 
   const handleClearCart = () => {
     dispatch(clearCart());
@@ -65,8 +68,16 @@ const Cart = () => {
               </div>
 
               <p>Taxes and shipping calculated at checkout.</p>
-
-              <button>Check out</button>
+              {auth._id ? (
+                <button>Check out</button>
+              ) : (
+                <button
+                  className="cart_login"
+                  onClick={() => navigate("/login")}
+                >
+                  Login to Check out
+                </button>
+              )}
 
               <div className="continue_shopping">
                 <Link to="/">

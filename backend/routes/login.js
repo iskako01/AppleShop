@@ -1,15 +1,14 @@
 const bcrypt = require("bcrypt");
-const joi = require("joi");
-const express = require("express");
 const { User } = require("../models/user");
-const  generateAuthToken  = require("../utils/generateAuthToken");
-
+const Joi = require("joi");
+const express = require("express");
+const generateAuthToken = require("../utils/generateAuthToken");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const schema = joi.object({
-    email: joi.string().required().email(),
-    password: joi.string().min(6).max(1024).required(),
+  const schema = Joi.object({
+    email: Joi.string().min(3).max(200).required().email(),
+    password: Joi.string().min(6).max(200).required(),
   });
 
   const { error } = schema.validate(req.body);
@@ -17,12 +16,11 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: req.body.email });
-
   if (!user) return res.status(400).send("Invalid email or password...");
 
-  const isValid = await bcrypt.compare(req.body.password, user.password);
-
-  if (!isValid) return res.status(400).send("Invalid email or password...");
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword)
+    return res.status(400).send("Invalid email or password...");
 
   const token = generateAuthToken(user);
 

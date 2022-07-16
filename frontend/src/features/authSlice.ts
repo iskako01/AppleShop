@@ -4,8 +4,9 @@ import { Iregister } from "../type/registerType";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { AxiosError } from "axios";
 import { Ilogin } from "../type/authType";
+import { toast } from "react-toastify";
 
-interface IinitialState {
+export interface IinitialState {
   token: string | Iregister;
   email: string;
   password: string;
@@ -73,11 +74,13 @@ export const loginUser = createAsyncThunk(
     try {
       console.log(values);
 
-      await authAPI.loginUser({
+      const token = await authAPI.loginUser({
         email: values.email,
         password: values.password,
-        _id: values._id,
       });
+
+      localStorage.setItem("token", token.data);
+      return token.data;
     } catch (error) {
       const err = error as AxiosError;
       if (err.response) {
@@ -93,14 +96,13 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loadUser(state: IinitialState, ) {
+    loadUser(state: IinitialState) {
       const token = state.token;
-	  console.log(token);
-	  
+      console.log(token);
 
       if (token) {
         const user = jwtDecode<IJwtDecode>(String(token));
-
+        console.log(token);
         state._id = user._id;
         state.name = user.name;
         state.email = user.email;
@@ -109,6 +111,7 @@ const authSlice = createSlice({
     },
     logoutuser(state: IinitialState) {
       localStorage.removeItem("token");
+      toast.warning(`Logged out!`);
 
       return {
         ...state,
@@ -134,14 +137,19 @@ const authSlice = createSlice({
       registerUser.fulfilled,
       (state, action: PayloadAction<Iregister>) => {
         const user = jwtDecode<IJwtDecode>(String(action.payload));
+        console.log(user);
+
         if (action.payload) {
-          console.log(user);
-          state.token = action.payload;
-          state._id = user._id;
-          state.name = user.name;
-          state.password = String(user.iat);
-          state.email = user.email;
-          state.registerStatus = "success";
+          return {
+            ...state,
+            token: action.payload,
+            _id: state._id,
+            name: user.name,
+            password: String(user.iat),
+            email: user.email,
+            registerStatus: "success",
+            userLoaded: true,
+          };
         } else return state;
       }
     );
@@ -158,9 +166,25 @@ const authSlice = createSlice({
     builder.addCase(loginUser.pending, (state) => {
       return { ...state, loginStatus: "pending" };
     });
+
     builder.addCase(
       loginUser.fulfilled,
-      (state, action: PayloadAction<any>) => {}
+      (state, action: PayloadAction<any>) => {
+        const user = jwtDecode<IJwtDecode>(String(action.payload));
+        console.log(user);
+
+        if (action.payload) {
+          return {
+            ...state,
+            token: action.payload,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            loginStatus: "success",
+            userLoaded: true,
+          };
+        } else return state;
+      }
     );
     builder.addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
       return {

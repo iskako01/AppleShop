@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Route,
   Routes,
@@ -15,15 +15,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { Login } from "./components/auth/Login";
 import { Register } from "./components/auth/Register";
-import { AppDispatch } from "./redux/store";
+import { AppDispatch, AppStore } from "./redux/store";
 import { loadUser } from "./features/authSlice";
+import { IinitialState } from "./features/authSlice";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
+  const userLoaded = useSelector<AppStore, IinitialState>(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     dispatch(loadUser());
-  }, [dispatch]);
+  }, [userLoaded.userLoaded]);
   return (
     <div className="App">
       <ToastContainer position="bottom-left" />
