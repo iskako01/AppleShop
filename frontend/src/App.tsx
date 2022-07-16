@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   Route,
   Routes,
@@ -14,13 +15,20 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { Login } from "./components/auth/Login";
 import { Register } from "./components/auth/Register";
+import { AppDispatch } from "./redux/store";
+import { loadUser } from "./features/authSlice";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
   return (
     <div className="App">
       <ToastContainer position="bottom-left" />
       <Navbar />
-      {/* <Router> */}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
@@ -29,7 +37,6 @@ function App() {
         <Route path="/not-found" element={<NotFound />} />
         <Route path="/*" element={<Navigate to="/not-found" />} />
       </Routes>
-      {/* </Router> */}
     </div>
   );
 }

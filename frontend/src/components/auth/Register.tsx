@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../features/authSlice";
 import { AppDispatch, AppStore } from "../../redux/store";
 import { IregisterState } from "../../type/registerType";
-import { StyledForm } from "./StyledForm";
+import { StyledForm } from "./StyledAuth";
 
 export const Register = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { registerStatus, registerError } = useSelector<
-    AppStore,
-    IregisterState
-  >((state) => state.auth);
+  const auth = useSelector<AppStore, IregisterState>((state) => state.auth);
 
   const handleSetName = (e: any) => {
     setName(e.target.value);
@@ -40,6 +39,12 @@ export const Register = () => {
     );
   };
 
+  useEffect(() => {
+    if (auth._id) {
+      navigate("/cart");
+    }
+  }, [auth._id,navigate]);
+
   return (
     <div>
       <StyledForm onSubmit={handleSubmit}>
@@ -60,10 +65,12 @@ export const Register = () => {
           placeholder="Password"
         />
         <button type="submit">
-          {registerStatus === "pending" ? "Submitting" : "Register"}
+          {auth.registerStatus === "pending" ? "Submitting" : "Register"}
         </button>
 
-        {registerStatus === "rejected" ? <p>{registerError}</p> : null}
+        {auth.registerStatus === "rejected" ? (
+          <p>{auth.registerError}</p>
+        ) : null}
       </StyledForm>
     </div>
   );

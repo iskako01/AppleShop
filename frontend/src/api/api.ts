@@ -26,7 +26,7 @@ export const productsAPI = {
 };
 
 export const authAPI = {
-  loginUser({ email, password }: Ilogin) {
+  loginUser({ email, password ,_id}: Ilogin) {
     return instance.post("api/login", { email, password });
   },
 

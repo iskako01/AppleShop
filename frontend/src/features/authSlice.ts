@@ -3,6 +3,7 @@ import { authAPI } from "../api/api";
 import { Iregister } from "../type/registerType";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { AxiosError } from "axios";
+import { Ilogin } from "../type/authType";
 
 interface IinitialState {
   token: string | Iregister;
@@ -15,10 +16,9 @@ interface IinitialState {
   registerError: string;
   loginStatus: string;
   loginError: string;
+  userLoaded: boolean;
 }
-interface IknownError {
-  errorMessage: string;
-}
+
 interface IJwtDecode {
   email: string;
   iat: number;
@@ -37,6 +37,7 @@ const initialState: IinitialState = {
   registerError: "",
   loginStatus: "",
   loginError: "",
+  userLoaded: false,
 };
 
 export const registerUser = createAsyncThunk(
@@ -66,10 +67,65 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (values: Ilogin, { rejectWithValue }) => {
+    try {
+      console.log(values);
+
+      await authAPI.loginUser({
+        email: values.email,
+        password: values.password,
+        _id: values._id,
+      });
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response) {
+        console.log(err.response.status);
+        console.log(err.response.data);
+      }
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    loadUser(state: IinitialState, ) {
+      const token = state.token;
+	  console.log(token);
+	  
+
+      if (token) {
+        const user = jwtDecode<IJwtDecode>(String(token));
+
+        state._id = user._id;
+        state.name = user.name;
+        state.email = user.email;
+        state.userLoaded = true;
+      }
+    },
+    logoutuser(state: IinitialState) {
+      localStorage.removeItem("token");
+
+      return {
+        ...state,
+        token: "",
+        email: "",
+        name: "",
+        password: "",
+        isAuth: false,
+        _id: "",
+        registerStatus: "",
+        registerError: "",
+        loginStatus: "",
+        loginError: "",
+        userLoaded: false,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(registerUser.pending, (state) => {
       return { ...state, registerStatus: "pending" };
@@ -77,7 +133,6 @@ const authSlice = createSlice({
     builder.addCase(
       registerUser.fulfilled,
       (state, action: PayloadAction<Iregister>) => {
-        // const user = action.payload;
         const user = jwtDecode<IJwtDecode>(String(action.payload));
         if (action.payload) {
           console.log(user);
@@ -88,18 +143,6 @@ const authSlice = createSlice({
           state.email = user.email;
           state.registerStatus = "success";
         } else return state;
-        // if (action.payload) {
-
-        //   return {
-        //     ...state,
-        //     token: action.payload,
-        //     // name: user.name,
-        //     // email: user.email,
-        //     // password: user.password,
-        //     // _id: user._id,
-        //     registerStatus: "success",
-        //   };
-        // } else return state;
       }
     );
     builder.addCase(
@@ -112,7 +155,23 @@ const authSlice = createSlice({
         };
       }
     );
+    builder.addCase(loginUser.pending, (state) => {
+      return { ...state, loginStatus: "pending" };
+    });
+    builder.addCase(
+      loginUser.fulfilled,
+      (state, action: PayloadAction<any>) => {}
+    );
+    builder.addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        loginStatus: "rejected",
+        loginError: action.payload,
+      };
+    });
   },
 });
+
+export const { loadUser, logoutuser } = authSlice.actions;
 
 export default authSlice.reducer;

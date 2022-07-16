@@ -1,5 +1,20 @@
 import styled from "styled-components";
 
+export const StyledLogout = styled.div`
+  color: #fff;
+  cursor: pointer;
+`;
+
+export const StyledLogin = styled.div`
+  a {
+    &:last-child {
+      margin-left: 20px;
+    }
+    color: #fff;
+  }
+ 
+`;
+
 export const StyledForm = styled.form`
   max-width: 350px;
   width: 100%;
